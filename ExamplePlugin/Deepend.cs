@@ -6,10 +6,11 @@ using RoR2;
 using RoR2.Skills;
 using System;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
 using UnityEngine.Networking;
 
-namespace ExamplePlugin
+namespace Skillsfromthedeepend
 {
     [BepInDependency(R2API.R2API.PluginGUID)]
 
@@ -17,7 +18,7 @@ namespace ExamplePlugin
     [BepInPlugin(PluginGUID, PluginName, PluginVersion)]
 
 
-    [R2APISubmoduleDependency(nameof(LanguageAPI), nameof(LoadoutAPI), nameof(PrefabAPI), nameof(EffectAPI), nameof(BuffAPI))]
+    [R2APISubmoduleDependency(nameof(LanguageAPI), nameof(LoadoutAPI), nameof(PrefabAPI), nameof(DamageAPI))]
 
 
     public class Deepend : BaseUnityPlugin
@@ -25,8 +26,8 @@ namespace ExamplePlugin
 
         public const string PluginGUID = PluginAuthor + "." + PluginName;
         public const string PluginAuthor = "Heyimnoob";
-        public const string PluginName = "FuckersStoleMyAutoaim";
-        public const string PluginVersion = "1.4.2";
+        public const string PluginName = "SkillsFromTheDeepEnd";
+        public const string PluginVersion = "1.9.1";
 
 
         public static Sprite CreateSpriteBadWay(byte[] resourceBytes)
@@ -63,93 +64,91 @@ namespace ExamplePlugin
                 viewableNode = new ViewablesCatalog.Node(skillDef.skillNameToken, false, null)
             };
 
-            LoadoutAPI.AddSkillDef(skillDef);
+
         }
         public void Fusillade()
         {
-            GameObject character = Resources.Load<GameObject>("prefabs/characterbodies/HuntressBody");
+            GameObject character = LegacyResourcesAPI.Load<GameObject>("prefabs/characterbodies/HuntressBody");
 
-            RoR2.Skills.SkillDef skillDef = ScriptableObject.CreateInstance<RoR2.Skills.SkillDef>();
+            FusilladeDef = ScriptableObject.CreateInstance<RoR2.Skills.SkillDef>();
             //Did you know that the critically acclaimed MMORPG Final Fantasy XIV has a free trial,
             //and includes the entirety of A Realm Reborn AND the award-winning Heavensward expansion up to level 60 with no restrictions on playtime?
             //Sign up, and enjoy Eorzea today!
 
-            skillDef.activationState = new SerializableEntityStateType(typeof(NoAim));
-            skillDef.interruptPriority = InterruptPriority.Any;
-            skillDef.activationStateMachineName = ("Weapon");
-            skillDef.baseRechargeInterval = 0;
-            skillDef.cancelSprintingOnActivation = false;
-            skillDef.canceledFromSprinting = false;
-            skillDef.isCombatSkill = true;
-            skillDef.keywordTokens = new string[] { "KEYWORD_AGILE" };
-            skillDef.icon = CreateSpriteBadWay(Skillsfromthedeepend.Properties.Resources.Fusillade128_2);
+            FusilladeDef.activationState = new SerializableEntityStateType(typeof(NoAim));
+            FusilladeDef.interruptPriority = InterruptPriority.Any;
+            FusilladeDef.activationStateMachineName = ("Weapon");
+            FusilladeDef.baseRechargeInterval = 0;
+            FusilladeDef.cancelSprintingOnActivation = false;
+            FusilladeDef.canceledFromSprinting = false;
+            FusilladeDef.isCombatSkill = true;
+            FusilladeDef.keywordTokens = new string[] { "KEYWORD_AGILE" };
+            FusilladeDef.icon = this.assetBundle.LoadAsset<Sprite>("fusilladeIcon.png");
             //Message #charybdis
-            CharacterAltSkill(character.GetComponent<SkillLocator>().primary, skillDef, "Fusillade", "Shoot a modified arrow from your bow that does <style=cIsDamage>375% damage</style> and has <style=cDeath>NO AUTOAIM</style>. <style=cKeywordName>Pierces.</style>");
+            CharacterAltSkill(character.GetComponent<SkillLocator>().primary, FusilladeDef, "Fusillade", "Shoot a modified arrow from your bow that does <style=cIsDamage>375% damage</style> and has <style=cDeath>NO AUTOAIM</style>. <style=cKeywordName>Pierces.</style>");
 
-            LoadoutAPI.AddSkill(typeof(NoAim));
+
         }
 
         public void Untitled()
         {
-            GameObject character = Resources.Load<GameObject>("prefabs/characterbodies/EngiBody");
+            GameObject character = LegacyResourcesAPI.Load<GameObject>("prefabs/characterbodies/EngiBody");
 
 
-            EngiSkillDef skillDef = ScriptableObject.CreateInstance<EngiSkillDef>();
+            EngieExplode = ScriptableObject.CreateInstance<SkillDef>();
 
-            skillDef.activationState = new SerializableEntityStateType(typeof(EngiDisrupt));
-            skillDef.interruptPriority = InterruptPriority.Any;
-            skillDef.activationStateMachineName = ("Weapon");
-            skillDef.baseRechargeInterval = 30;
+            EngieExplode.activationState = new SerializableEntityStateType(typeof(EngiDisrupt));
+            EngieExplode.interruptPriority = InterruptPriority.Any;
+            EngieExplode.activationStateMachineName = ("Weapon");
+            EngieExplode.baseRechargeInterval = 30;
             //change this later ^
-            skillDef.cancelSprintingOnActivation = true;
-            skillDef.canceledFromSprinting = false;
-            skillDef.isCombatSkill = true;
-            skillDef.icon = CreateSpriteBadWay(Skillsfromthedeepend.Properties.Resources.Greener);
+            EngieExplode.cancelSprintingOnActivation = true;
+            EngieExplode.canceledFromSprinting = false;
+            EngieExplode.isCombatSkill = true;
+            EngieExplode.icon = this.assetBundle.LoadAsset<Sprite>("juryIcon.png");
 
-            CharacterAltSkill(character.GetComponent<SkillLocator>().utility, skillDef, "Jury-rigged Turrets", "Weaponize your crappy turrets with this one simple trick! On activation, explodes all currently alive turrets for <style=cIsDamage>250% of their</style> <style=cDeath>Max HP</style> in a large radius. Refunds turrets on use, but has a long cooldown");
+            CharacterAltSkill(character.GetComponent<SkillLocator>().utility, EngieExplode, "Jury-rigged Turrets", "Weaponize your crappy turrets with this one simple trick! On activation, explodes all currently alive turrets for <style=cIsDamage>250% of their</style> <style=cDeath>Max HP</style> in a large radius. Refunds turrets on use, but has a long cooldown");
 
-            LoadoutAPI.AddSkill(typeof(EngiDisrupt));
 
 
         }
 
         public void OOOOOYEAHBROTHERRRRR()
         {
-            GameObject character = Resources.Load<GameObject>("prefabs/characterbodies/CommandoBody");
+            GameObject character = LegacyResourcesAPI.Load<GameObject>("prefabs/characterbodies/CommandoBody");
 
 
-            SteppedSkillDef skillDef = ScriptableObject.CreateInstance<SteppedSkillDef>();
-            skillDef.activationState = new SerializableEntityStateType(typeof(Embeddeddets));
-            skillDef.interruptPriority = InterruptPriority.Any;
-            skillDef.activationStateMachineName = ("Weapon");
-            skillDef.canceledFromSprinting = true;
-            skillDef.cancelSprintingOnActivation = true;
-            skillDef.isCombatSkill = true;
-            skillDef.baseRechargeInterval = 2;
-            skillDef.baseMaxStock = 10;
-            skillDef.stockToConsume = 1;
-            skillDef.dontAllowPastMaxStocks = true;
-            skillDef.requiredStock = 1;
-            skillDef.rechargeStock = 10;
-            skillDef.resetCooldownTimerOnUse = true;
-            skillDef.resetStepsOnIdle = false;
-            skillDef.stepCount = 2;
-            skillDef.icon = CreateSpriteBadWay(Skillsfromthedeepend.Properties.Resources.EmDet);
+            DetsDef = ScriptableObject.CreateInstance<SteppedSkillDef>();
+            DetsDef.activationState = new SerializableEntityStateType(typeof(Embeddeddets));
+            DetsDef.interruptPriority = InterruptPriority.Skill;
+            DetsDef.activationStateMachineName = ("Weapon");
+            DetsDef.canceledFromSprinting = true;
+            DetsDef.cancelSprintingOnActivation = true;
+            DetsDef.isCombatSkill = true;
+            DetsDef.baseRechargeInterval = 2;
+            DetsDef.baseMaxStock = 10;
+            DetsDef.stockToConsume = 1;
+            DetsDef.dontAllowPastMaxStocks = true;
+            DetsDef.requiredStock = 1;
+            DetsDef.rechargeStock = 10;
+            DetsDef.resetCooldownTimerOnUse = true;
+            DetsDef.stepCount = 2;
+            DetsDef.icon = this.assetBundle.LoadAsset<Sprite>("detsIcon.png");
 
-            CharacterAltSkill(character.GetComponent<SkillLocator>().primary, skillDef, "Embedded Detonators", "Fire <style=cDeath>10 bullets</style>, which Embed into enemies and do <style=cIsDamage>75% damage</style> on impact, before having to reload, causing all bullets in enemies to explode for <style=cIsDamage>200% damage</style>.");
+            CharacterAltSkill(character.GetComponent<SkillLocator>().primary, DetsDef, "Embedded Detonators", "Fire <style=cDeath>10 bullets</style>, which Embed into enemies and do <style=cIsDamage>75% damage</style> on impact, before having to reload, causing all bullets in enemies to explode for <style=cIsDamage>200% damage</style>.");
 
 
-            LoadoutAPI.AddSkill(typeof(Embeddeddets));
 
-            effect = PrefabAPI.InstantiateClone(Resources.Load<GameObject>("prefabs/effects/omnieffect/OmniExplosionVFX"), "CommandoExplode", false);
+
+            Dets = PrefabAPI.InstantiateClone(LegacyResourcesAPI.Load<GameObject>("prefabs/effects/omnieffect/OmniExplosionVFX"), "CommandoExplode", false);
             {
 
-                EffectComponent effectComponent = effect.GetComponent<EffectComponent>();
+                EffectComponent effectComponent = Dets.GetComponent<EffectComponent>();
                 effectComponent.soundName = "Play_captain_shift_impact";
                 effectComponent.applyScale = true;
 
             }
-            EffectAPI.AddEffect(effect);
+            R2API.ContentAddition.AddEffect(Dets);
 
             character.AddComponent<EmbeddedDetsTracker>();
             On.RoR2.GenericSkill.RestockSteplike += (orig, self) =>
@@ -157,7 +156,7 @@ namespace ExamplePlugin
                 {
                     int previousStock = self.stock;
                     orig(self);
-                    if (self.stock > previousStock && self.skillDef == (SkillDef)skillDef && NetworkServer.active)
+                    if (self.stock > previousStock && self.skillDef == (SkillDef)DetsDef && NetworkServer.active)
                     {
 
                         EmbeddedDetsTracker tracker = self.GetComponent<EmbeddedDetsTracker>();
@@ -172,7 +171,7 @@ namespace ExamplePlugin
                                 {
 
                                     GameObject gameObject = healthComponent.gameObject;
-                                    EffectManager.SpawnEffect(effect, new EffectData
+                                    EffectManager.SpawnEffect(Dets, new EffectData
                                     {
                                         origin = gameObject.transform.position,
                                         scale = 4f,
@@ -192,7 +191,7 @@ namespace ExamplePlugin
                                         baseForce = 0
                                     };
                                     blastAttack.teamIndex = TeamComponent.GetObjectTeam(blastAttack.attacker);
-                                    blastAttack.attackerFiltering = AttackerFiltering.NeverHit;
+                                    blastAttack.attackerFiltering = AttackerFiltering.NeverHitSelf;
                                     blastAttack.Fire();
                                 }
                             }
@@ -213,137 +212,241 @@ namespace ExamplePlugin
 
         }
 
-        public class EngiSkillDef : RoR2.Skills.SkillDef
-        {       // Token: 0x06002A22 RID: 10786 RVA: 0x000AB92B File Offset: 0x000A9B2B
-            public override bool CanExecute(GenericSkill skillSlot)
-            {
-                return this.isAvailable(skillSlot) && base.CanExecute(skillSlot);
-            }
 
-            // Token: 0x06002A23 RID: 10787 RVA: 0x000AB93E File Offset: 0x000A9B3E
-            public override bool IsReady(GenericSkill skillSlot)
-            {
-                return this.isAvailable(skillSlot) && base.IsReady(skillSlot);
-            }
-
-            public bool isAvailable(GenericSkill skillSlot)
-
-            {
-                if (skillSlot.characterBody)
-                {
-                    CharacterMaster CharacterMaster = skillSlot.characterBody.master;
-
-                    if (CharacterMaster)
-                    {
-                        if (CharacterMaster.GetDeployableCount(DeployableSlot.EngiTurret) > 0)
-                        {
-                            return true;
-
-                        }
-
-
-                    }
-                }
-
-                return false;
-
-            }
-
-        }
 
         public void Thej()
         {
-            GameObject character = Resources.Load<GameObject>("prefabs/characterbodies/EngiBody");
+            GameObject character = LegacyResourcesAPI.Load<GameObject>("prefabs/characterbodies/EngiBody");
 
 
-            SkillDef skillDef = ScriptableObject.CreateInstance<SkillDef>();
+            EngieJump = ScriptableObject.CreateInstance<SkillDef>();
 
-            skillDef.activationState = new SerializableEntityStateType(typeof(Engiburst));
-            skillDef.interruptPriority = InterruptPriority.Any;
-            skillDef.activationStateMachineName = ("Weapon");
-            skillDef.baseRechargeInterval = 10;
+            EngieJump.activationState = new SerializableEntityStateType(typeof(Engiburst));
+            EngieJump.interruptPriority = InterruptPriority.Any;
+            EngieJump.activationStateMachineName = ("Weapon");
+            EngieJump.baseRechargeInterval = 10;
             //change this later ^
-            skillDef.cancelSprintingOnActivation = true;
-            skillDef.canceledFromSprinting = false;
-            skillDef.isCombatSkill = true;
-            skillDef.icon = CreateSpriteBadWay(Skillsfromthedeepend.Properties.Resources.image);
+            EngieJump.cancelSprintingOnActivation = true;
+            EngieJump.canceledFromSprinting = false;
+            EngieJump.isCombatSkill = true;
+            EngieJump.icon = this.assetBundle.LoadAsset<Sprite>("unstableIcon.png");
 
-            CharacterAltSkill(character.GetComponent<SkillLocator>().utility, skillDef, "Unstable Turrets", "Trade the exploding blast of Jury rigged turrets for an extremely powerful blast that will send you flying. <style=cDeath>Has no damage</style>");
+            CharacterAltSkill(character.GetComponent<SkillLocator>().utility, EngieJump, "Unstable Turrets", "Trade the exploding blast of Jury rigged turrets for an extremely powerful blast that will send you flying. <style=cDeath>Has no damage</style>");
 
-            LoadoutAPI.AddSkill(typeof(Engiburst));
+
 
         }
 
         public void Splitshot()
         {
-            GameObject character = Resources.Load<GameObject>("prefabs/characterbodies/HuntressBody");
+            GameObject character = LegacyResourcesAPI.Load<GameObject>("prefabs/characterbodies/HuntressBody");
 
-            SkillDef skillDef = ScriptableObject.CreateInstance<RoR2.Skills.SkillDef>();
+            SalvoDef = ScriptableObject.CreateInstance<RoR2.Skills.SkillDef>();
 
 
-            skillDef.activationState = new SerializableEntityStateType(typeof(Charge));
-            skillDef.interruptPriority = InterruptPriority.Any;
-            skillDef.activationStateMachineName = ("Weapon");
-            skillDef.baseRechargeInterval = 0;
-            skillDef.cancelSprintingOnActivation = false;
-            skillDef.canceledFromSprinting = false;
-            skillDef.isCombatSkill = true;
-            skillDef.keywordTokens = new string[] { "KEYWORD_AGILE" };
-            skillDef.icon = CreateSpriteBadWay(Skillsfromthedeepend.Properties.Resources.Fusillade128_2);
+            SalvoDef.activationState = new SerializableEntityStateType(typeof(Splitter));
+            SalvoDef.interruptPriority = InterruptPriority.Any;
+            SalvoDef.activationStateMachineName = ("Weapon");
+            SalvoDef.baseRechargeInterval = 0;
+            SalvoDef.cancelSprintingOnActivation = false;
+            SalvoDef.canceledFromSprinting = false;
+            SalvoDef.isCombatSkill = true;
+            SalvoDef.keywordTokens = new string[] { "KEYWORD_AGILE" };
+            SalvoDef.icon = this.assetBundle.LoadAsset<Sprite>("salvoIcon.png");
             //Message #charybdis
-            CharacterAltSkill(character.GetComponent<SkillLocator>().primary, skillDef, "Splitter", "3 shot lmao");
-            LoadoutAPI.AddSkill(typeof(Splitter));
-            LoadoutAPI.AddSkill(typeof(Charge));
+            CharacterAltSkill(character.GetComponent<SkillLocator>().primary, SalvoDef, "Salvo", "Shoot a volley of 3 close range arrows with high, uncontrollable spread for <style=cIsDamage>200%x3 damage</style>. Critical strikes cause the arrows to split in two");
+
+
         }
 
-        public void TacticsBuff()
+        public void Death()
         {
-             Tactics = ScriptableObject.CreateInstance<BuffDef>();
+            Agony = ScriptableObject.CreateInstance<BuffDef>();
 
+            Agony.isDebuff = true;
+            Agony.canStack = false;
+            Agony.iconSprite = this.assetBundle.LoadAsset<Sprite>("agonyBuff");
+            Agony.buffColor = new Color32(147, 112, 219, 225);
+
+            R2API.ContentAddition.AddBuffDef(Agony);
+
+            AcridComponent = base.GetComponent<CrocoDamageTypeController>();
+
+
+            On.RoR2.GlobalEventManager.OnHitEnemy += GlobalEventManager_OnHitEnemy;
+
+            On.RoR2.GlobalEventManager.OnCharacterDeath += GlobalEventManager_OnCharacterDeath;
+
+            GameObject character = LegacyResourcesAPI.Load<GameObject>("prefabs/characterbodies/crocobody");
+
+            OUAGGG = ScriptableObject.CreateInstance<SkillDef>();
+
+            OUAGGG.activationState = new SerializableEntityStateType(typeof(Misery));
+            OUAGGG.interruptPriority = InterruptPriority.Skill;
+            OUAGGG.activationStateMachineName = ("Weapon");
+            OUAGGG.baseRechargeInterval = 10;
+            OUAGGG.cancelSprintingOnActivation = false;
+            OUAGGG.canceledFromSprinting = true;
+            OUAGGG.isCombatSkill = true;
+            OUAGGG.icon = this.assetBundle.LoadAsset<Sprite>("agonyIcon.png");
+            OUAGGG.keywordTokens = new string[] { "KEYWORD_POISON", "KEYWORD_TORMENTED", "KEYWORD_RAPID_REGEN" };
+
+            CharacterAltSkill(character.GetComponent<SkillLocator>().special, OUAGGG, "Scourge", "<style=cIsHealing>Poisonous.</style> <style=cDeath>Tormenting.</style> Release a large explosion of bile from yourself, doing <style=cIsDamage>200% damage</style>.");
+
+        }
+
+
+        private void GlobalEventManager_OnCharacterDeath(On.RoR2.GlobalEventManager.orig_OnCharacterDeath orig, GlobalEventManager self, DamageReport damageReport)
+        {
+            if (!NetworkServer.active)
+            {
+                return;
+            }
+
+            orig(self, damageReport);
+            CharacterBody characterBody = damageReport.victimBody;
+            CharacterBody attackerBody = damageReport.attackerBody;
+            float Radius = 15f;
+            Vector3 CorePosition = characterBody.corePosition;
+            if (NetworkServer.active)
+            {
+                if (characterBody)
+                {
+                   
+                    if (characterBody.HasBuff(Agony))
+                    {
+                        Util.PlaySound("Play_acrid_shift_land", base.gameObject);
+
+
+
+                        EffectManager.SpawnEffect(Misery.Effect, new EffectData
+                        {
+                            scale = Radius,
+                            origin = CorePosition
+
+                        }, true);
+                        BlastAttack blastAttack = new BlastAttack
+                        {
+                            radius = Radius,
+                            position = characterBody.transform.position,
+                            baseDamage = attackerBody.damage * 1.5f,
+                            procCoefficient = 0.5f,
+                            attacker = attackerBody.gameObject,
+                            crit = Util.CheckRoll(attackerBody.crit, attackerBody.master),
+                            falloffModel = BlastAttack.FalloffModel.None,
+                            baseForce = 500f,
+                            attackerFiltering = AttackerFiltering.NeverHitSelf,
+                            damageColorIndex = DamageColorIndex.WeakPoint
+
+
+                        };
+                        DamageAPI.AddModdedDamageType(blastAttack, Deepend.acridBuffHandler);
+                        blastAttack.Fire();
+
+                        attackerBody.AddTimedBuff(RoR2Content.Buffs.CrocoRegen, 0.5f);
+                    }
+
+                }
+            }
+        }
+        private void GlobalEventManager_OnHitEnemy(On.RoR2.GlobalEventManager.orig_OnHitEnemy orig, GlobalEventManager self, DamageInfo damageInfo, GameObject victim)
+        {
             
-            Tactics.isDebuff = false;
-            Tactics.canStack = false;
-            Tactics.iconSprite = Resources.Load<Sprite>("textures/bodyicons/lemurianbody");
-            
 
-            BuffAPI.Add(new CustomBuff(Tactics));
+            orig(self, damageInfo, victim);
+            if (damageInfo.procCoefficient == 0f || damageInfo.rejected)
+            {
+                return;
+            }
+            if (!NetworkServer.active)
+            {
+                return;
+            }
+            if (DamageAPI.HasModdedDamageType(damageInfo, acridBuffHandler))
+            {
+                CharacterBody victimBody = victim ?
+                victim.GetComponent<CharacterBody>() : null;
 
-            GameObject character = Resources.Load<GameObject>("prefabs/characterbodies/CommandoBody");
-            character.AddComponent(typeof(Assinpassive));
-        
-        
+                if(victimBody)
+                {
+                    victimBody.AddTimedBuff(Agony, 20f);
+                }
+
+            }
+        }
+
+        public void LanguageHandler()
+        {
+            LanguageAPI.Add("KEYWORD_TORMENTED", "<style=cKeywordName>Tormented</style> <style=cSub>Mark an enemy, causing them to explode for <style=cIsDamage>150% damage</style> in a 15 meter radius on death. Also applies <style=cIsHealing>Regenerative</style></style>");
+          
+        }
+        public void Huntresscriteffect()
+        {
+            pew = PrefabAPI.InstantiateClone(LegacyResourcesAPI.Load<GameObject>("prefabs/effects/tracers/tracerhuntresssnipe"), "huntercrit", false);
+            { 
+                GameObject beamObject = pew.transform.Find("BeamObject").gameObject;
+                GameObject critOrb = LegacyResourcesAPI.Load<GameObject>("prefabs/effects/orbeffects/FlurryArrowCritOrbEffect");
+
+                Material matCritTrail = critOrb.transform.Find("TrailParent/Trail").GetComponent<TrailRenderer>().material;
+                Material[] newMaterials = new Material[] {null, matCritTrail};
+                beamObject.GetComponent<ParticleSystemRenderer>().SetSharedMaterials(newMaterials, 2);
+            }
+            R2API.ContentAddition.AddEffect(pew);
+
         }
 
         public void Engieeffect()
         {
-            effect = PrefabAPI.InstantiateClone(Resources.Load<GameObject>("prefabs/effects/omnieffect/OmniExplosionVFXEngiTurretDeath"), "engiedetonate", false);
+            effect = PrefabAPI.InstantiateClone(LegacyResourcesAPI.Load<GameObject>("prefabs/effects/omnieffect/OmniExplosionVFXEngiTurretDeath"), "engiedetonate", false);
             {
 
                 EffectComponent effectComponent = effect.GetComponent<EffectComponent>();
                 effectComponent.applyScale = true;
 
             }
-            EffectAPI.AddEffect(effect);
+            R2API.ContentAddition.AddEffect(effect);
 
         }
 
-
-
+        public void LoadAssets()
+        {
+            this.assetBundle = AssetBundle.LoadFromFile(Assembly.GetExecutingAssembly().Location.Replace("Skillsfromthedeepend.dll", "sftde"));
+        }
+        
+        public static DamageAPI.ModdedDamageType acridBuffHandler = DamageAPI.ReserveDamageType();
+        public static BuffDef Agony;
         public static BuffDef Tactics;
         public static GameObject effect;
         public static GameObject pew;
+        public static GameObject Dets;
+        public CrocoDamageTypeController AcridComponent;
+        public DamageType MiseryC;
+        public static SteppedSkillDef DetsDef;
+        public static SkillDef FusilladeDef;
+        public static SkillDef SalvoDef;
+        public static SkillDef EngieExplode;
+        public static SkillDef EngieJump;
+        public static SkillDef OUAGGG;
+        public static SkillDef Powermdoe;
+        public static SkillDef Dill;
+        public static SkillDef Insane;
+
+        public AssetBundle assetBundle;
+        public GameObject Effect = LegacyResourcesAPI.Load<GameObject>("prefabs/effects/impacteffects/CrocoLeapExplosion");
         public void Awake()
         {
+
+            LoadAssets();
             Untitled();
             Fusillade();
             OOOOOYEAHBROTHERRRRR();
             Thej();
             Engieeffect();
             Splitshot();
-            TacticsBuff();
-
-
-
+            Huntresscriteffect();
+            Death();
+            LanguageHandler();
+           
 
 
 

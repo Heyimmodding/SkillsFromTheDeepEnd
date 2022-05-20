@@ -8,7 +8,7 @@ using System.Text;
 using UnityEngine;
 using UnityEngine.Networking;
 
-namespace ExamplePlugin
+namespace Skillsfromthedeepend
 
 {
 	// Token: 0x02000BCD RID: 3021
@@ -52,11 +52,11 @@ namespace ExamplePlugin
 
 
 				};
-				bulletAttack.hitCallback = delegate (ref BulletAttack.BulletHit info)
+				bulletAttack.hitCallback = delegate (BulletAttack bulletAttack, ref BulletAttack.BulletHit info)
 				{
 					
 				
-					bool success = bulletAttack.DefaultHitCallback(ref info);
+				    bool success = BulletAttack.defaultHitCallback(bulletAttack, ref info);
 					if (base.isAuthority)
 					{
 						
@@ -116,7 +116,7 @@ namespace ExamplePlugin
 		// Token: 0x060044DC RID: 17628 RVA: 0x00013F7C File Offset: 0x0001217C
 		public override InterruptPriority GetMinimumInterruptPriority()
 		{
-			return InterruptPriority.Skill;
+			return InterruptPriority.PrioritySkill;
 		}
 
 		// Token: 0x04003E6D RID: 15981

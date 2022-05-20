@@ -9,7 +9,7 @@ using EntityStates;
 using UnityEngine.Networking;
 using EntityStates.QuestVolatileBattery;
 
-namespace ExamplePlugin
+namespace Skillsfromthedeepend
 {
 	// Token: 0x02000BBB RID: 3003
 	public class EngiDisrupt : BaseState
@@ -53,7 +53,7 @@ namespace ExamplePlugin
 										baseDamage = turretMaster.GetBody().healthComponent.fullCombinedHealth * damageCoefficient,
 										baseForce = 5000f,
 										bonusForce = Vector3.zero,
-										attackerFiltering = AttackerFiltering.NeverHit,
+										attackerFiltering = AttackerFiltering.NeverHitSelf,
 										crit = base.RollCrit(),
 										procChainMask = default(ProcChainMask),
 										procCoefficient = 1.0f,

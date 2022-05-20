@@ -6,7 +6,7 @@ using RoR2.Skills;
 using UnityEngine;
 using EntityStates;
 
-namespace ExamplePlugin
+namespace Skillsfromthedeepend
 {
 	// Token: 0x02000BCD RID: 3021
 	public class NoAim : BaseSkillState
@@ -35,7 +35,7 @@ namespace ExamplePlugin
 					maxSpread = base.characterBody.spreadBloomAngle,
 					damage = NoAim.damageCoefficient * this.damageStat,
 					force = NoAim.force,
-					tracerEffectPrefab = Resources.Load<GameObject>("prefabs/effects/tracers/tracerhuntressnipe"),
+					tracerEffectPrefab = LegacyResourcesAPI.Load<GameObject>("prefabs/effects/tracers/tracerhuntresssnipe"),
 					muzzleName = targetMuzzle,
 					hitEffectPrefab = NoAim.hitEffectPrefab,
 					isCrit = Util.CheckRoll(this.critStat, base.characterBody.master),
@@ -60,6 +60,7 @@ namespace ExamplePlugin
 			base.PlayCrossfade("Gesture, Override", "FireSeekingShot", "FireSeekingShot.playbackRate", this.duration, this.duration * 0.2f / this.attackSpeedStat);
 			base.PlayCrossfade("Gesture, Additive", "FireSeekingShot", "FireSeekingShot.playbackRate", this.duration, this.duration * 0.2f / this.attackSpeedStat);
 			this.FireBullet("Muzzle");
+			
 		}
 
 		// Token: 0x060044DB RID: 17627 RVA: 0x001166B8 File Offset: 0x001148B8
@@ -83,10 +84,10 @@ namespace ExamplePlugin
 
 		public static GameObject hunter = Deepend.pew;
 		// Token: 0x04003E6D RID: 15981
-		public static GameObject muzzleEffectPrefab = Resources.Load<GameObject>("prefabs/effects/muzzleflashes/MuzzleflashHuntress");
+		public static GameObject muzzleEffectPrefab = LegacyResourcesAPI.Load<GameObject>("prefabs/effects/muzzleflashes/MuzzleflashHuntress");
 
 		// Token: 0x04003E6E RID: 15982
-		public static GameObject hitEffectPrefab = Resources.Load<GameObject>("prefabs/effects/omnieffect/OmniImpactVFXBrotherLunarShardExplosion");
+		public static GameObject hitEffectPrefab = LegacyResourcesAPI.Load<GameObject>("prefabs/effects/omnieffect/OmniImpactVFXBrotherLunarShardExplosion");
 
 		// Token: 0x04003E70 RID: 15984
 		public static float damageCoefficient = 3.75f;
@@ -101,7 +102,7 @@ namespace ExamplePlugin
 		public static string firePistolSoundString = "Play_huntress_m1_shoot";
 
 		// Token: 0x04003E74 RID: 15988
-		public static float recoilAmplitude = 5f;
+		public static float recoilAmplitude = 50f;
 
 		// Token: 0x04003E75 RID: 15989
 		public static float spreadBloomValue = 0.5f;

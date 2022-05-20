@@ -9,7 +9,7 @@ using EntityStates;
 using UnityEngine.Networking;
 using EntityStates.QuestVolatileBattery;
 
-namespace ExamplePlugin
+namespace Skillsfromthedeepend
 {
 	// Token: 0x02000BBB RID: 3003
 	public class Engiburst: BaseState

@@ -4,7 +4,7 @@ using RoR2;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace ExamplePlugin
+namespace Skillsfromthedeepend
 {
     public class EmbeddedDetsTracker :
     MonoBehaviour 

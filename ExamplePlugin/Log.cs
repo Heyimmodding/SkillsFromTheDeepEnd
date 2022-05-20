@@ -1,6 +1,6 @@
 ﻿using BepInEx.Logging;
 
-namespace ExamplePlugin
+namespace Skillsfromthedeepend
 {
     internal static class Log
     {
